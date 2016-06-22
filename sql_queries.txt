@@ -1,0 +1,38 @@
+select c.customer_no , c.customer_name , c.email, c.phone,i.invoice_no , i.datee , i.amount from customer c, invoicee i where c.customer_no = i.customer_ref ;
+
+
+
+select b.invoice_no  from invoicee a, invoicee b where a.customer_ref=222 and a.datee = b.datee ;
+
+select * from invoicee where customer_ref = (select customer_no from customer where customer_name='qwe')
+
+
+create or replace procedure add_customer (no customer.customer_no%TYPE  ,name customer.customer_name%TYPE,em customer.email%TYPE ,ph customer.phone%TYPE) 
+IS BEGIN
+insert into customer values(no , name , em , ph);
+end;
+
+begin
+add_customer(13, 'asddf' , 'asdsed@bnjkd.com' , 9882516788);
+end add_customer;
+
+
+create or replace procedure fetch_customer(no IN  customer.customer_no%TYPE , name OUT customer.customer_name%TYPE , email OUT customer.email%TYPE )
+is 
+begin
+select customer_name,email INTO name,email from customer  where customer_no = no;
+EXCEPTION
+when no_data_found then
+raise_application_error(-20001, 'Customer doesnt exists');
+end ;
+
+
+
+declare
+name customer.customer_name%TYPE ;
+email customer.email%TYPE;
+begin
+fetch_customer(111, name ,email);
+dbms_output.put_line(name);
+dbms_output.put_line(email);
+end fetch_customer;
